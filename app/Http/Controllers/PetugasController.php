@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Petugas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class PetugasController extends Controller
 {
@@ -15,6 +17,8 @@ class PetugasController extends Controller
     public function index()
     {
         //
+        $petugasx = User::all();
+        return view('content.pegawai.petugas', compact('petugasx'));
     }
 
     /**
@@ -22,9 +26,23 @@ class PetugasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
+        $request->validate([
+            'nama'=> 'required',
+            'email'=> 'required',
+            'password'=> 'required',
+            'role'=> 'required',
+        ]);
+        User::create([
+            'nama' => $request->nama,
+            'email'=> $request->email,
+            'password'=> Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+        return redirect('/petugas');
+
     }
 
     /**
@@ -44,9 +62,10 @@ class PetugasController extends Controller
      * @param  \App\Models\Petugas  $petugas
      * @return \Illuminate\Http\Response
      */
-    public function show(Petugas $petugas)
+    public function show()
     {
         //
+        return view('content.pegawai.create');
     }
 
     /**
@@ -55,9 +74,29 @@ class PetugasController extends Controller
      * @param  \App\Models\Petugas  $petugas
      * @return \Illuminate\Http\Response
      */
-    public function edit(Petugas $petugas)
+    public function viewEdit($id){
+        $petugas = User::where('id', $id)->first();
+        return view('content.pegawai.edit', compact('petugas'));
+    }
+
+
+    public function edit(Request $request, $id)
     {
         //
+        $request->validate([
+            'nama'=> 'required',
+            'email'=> 'required',
+            'password'=> 'required',
+            'role'=> 'required',
+        ]);
+
+        User::where('id', $id)->update([
+            'nama'=> $request->nama,
+            'email'=> $request->email,
+            'password'=> Hash::make($request->password),
+            'role'=> $request->role,
+        ]);
+        return redirect('/petugas');
     }
 
     /**
@@ -78,8 +117,10 @@ class PetugasController extends Controller
      * @param  \App\Models\Petugas  $petugas
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Petugas $petugas)
+    public function destroy($id)
     {
         //
+        User::find($id)->delete();
+        return redirect('petugas');
     }
 }

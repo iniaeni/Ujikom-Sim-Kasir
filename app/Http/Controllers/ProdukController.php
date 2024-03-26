@@ -15,6 +15,8 @@ class ProdukController extends Controller
     public function index()
     {
         //
+        $produkx = Produk::all();
+        return view('content.produk.produk', compact('produkx'));
     }
 
     /**
@@ -22,9 +24,29 @@ class ProdukController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+
+
+     public function view()
     {
         //
+        return view('content.produk.create');
+    }
+
+    public function create(Request $request)
+    {
+        //
+        $request->validate([
+            'nama_produk' => 'required',
+            'harga' => 'required',
+            'stok' => 'required',
+        ]);
+
+        Produk::create([
+            'nama_produk' => $request->nama_produk,
+            'harga' => $request->harga,
+            'stok' => $request->stok,
+        ]);
+        return redirect('/produk');
     }
 
     /**
@@ -44,10 +66,13 @@ class ProdukController extends Controller
      * @param  \App\Models\Produk  $produk
      * @return \Illuminate\Http\Response
      */
-    public function show(Produk $produk)
-    {
-        //
-    }
+    // public function show($id)
+    // {
+    //     //
+    //     $produk = Produk::where('id', $id)->first();
+
+    //     return view('content.produk.update', compact('produk'));
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -55,10 +80,15 @@ class ProdukController extends Controller
      * @param  \App\Models\Produk  $produk
      * @return \Illuminate\Http\Response
      */
-    public function edit(Produk $produk)
+    public function edit($id)
     {
-        //
+        // Ambil data produk berdasarkan ID
+        $produk = Produk::where('id', $id)->first();
+
+        // Kemudian tampilkan view form edit produk dengan data produk yang ditemukan
+        return view('content.produk.edit', compact('produk'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +97,20 @@ class ProdukController extends Controller
      * @param  \App\Models\Produk  $produk
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Produk $produk)
+    public function update(Request $request, $id)
     {
         //
+        $request->validate([
+            'nama_produk' => 'required',
+            'harga' => 'required',
+            'stok' => 'required',
+        ]);
+        Produk::where('id', $id)->update([
+            'nama_produk' => $request->nama_produk,
+            'harga' => $request->harga,
+            'stok' => $request->stok,
+        ]);
+        return redirect('/produk');
     }
 
     /**
@@ -78,8 +119,10 @@ class ProdukController extends Controller
      * @param  \App\Models\Produk  $produk
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Produk $produk)
+    public function destroy($id)
     {
         //
+        Produk::where('id','=', $id)->delete();
+        return redirect('/produk');
     }
 }
