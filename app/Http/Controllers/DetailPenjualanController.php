@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailPenjualan;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class DetailPenjualanController extends Controller
@@ -15,6 +16,15 @@ class DetailPenjualanController extends Controller
     public function index()
     {
         //
+        // $details = Transaksi::all();
+        $details = Transaksi::groupBy('id_pelanggan')
+        ->selectRaw('id_pelanggan, count(*) as jumlah_transaksi, sum(harga) as total_bayar, MAX(created_at) as tanggal_transaksi')
+        ->get();
+        $produk= Transaksi::with('produk')
+                                   ->get()
+                                   ->groupBy('id_pelanggan');
+
+        return view('content.transaksi.detail', compact('details', 'produk'));
     }
 
     /**

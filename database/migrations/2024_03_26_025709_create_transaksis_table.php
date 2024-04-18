@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
+            $table->biginteger('id_pelanggan')->nullable();
+            $table->biginteger('produk_id');
+            $table->string('nama_produk');
+            $table->DECIMAL('harga')->nullable();
+            $table->DECIMAL('sub_total');
+            $table->integer('jumlah');
             $table->timestamps();
         });
     }

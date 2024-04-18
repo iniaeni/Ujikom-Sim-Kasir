@@ -15,6 +15,10 @@ class Produk extends Model
     ];
 
     public function detail(){
-        return $this->hasMany(Detail::class);
+        return $this->hasMany(DetailPenjualan::class);
+    }
+
+    public function transaksi(){
+        return $this->hasMany(Transaksi::class);
     }
 }

@@ -6,7 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\TransaksiController;
-
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\DetailPenjualanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,8 +19,28 @@ use App\Http\Controllers\TransaksiController;
 |
 */
 
-Route::get('/', [AuthController::class, 'index']);
-Route::post('/auth', [AuthController::class, 'auth'])->name('login.auth');
+// route login 
+Route::middleware('isGuest')->group(function(){
+    Route::get('/', [AuthController::class, 'index']);
+    Route::post('/auth', [AuthController::class, 'auth'])->name('login.auth');
+});
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/error', [DashboardController::class, 'error'])->name('dashboard.view');
+
+
+Route::middleware(['isLogin', 'CekRole:petugas'])->group(function(){
+    Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::post('/input-transaksi/{id}', [TransaksiController::class, 'tambahKeranjang'])->name('input.transaksi');
+    Route::get('/keranjang', [TransaksiController::class, 'view']);
+    Route::patch('/kurang-barang/{id}', [TransaksiController::class, 'kurang'])->name('kurang.barang');
+    Route::get('/print/{id_pelanggan}', [CheckoutController::class, 'printPDF']);
+    // route struk dan detail
+    Route::get('/struk/{id_pelanggan}', [TransaksiController::class, 'struk'])->name('struk.pembayaran');
+    
+});
+
+Route::middleware('isLogin')->group(function(){
+// dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.view');
 
 // Produk
@@ -39,7 +60,10 @@ Route::patch('/edit/{id}', [PetugasController::class, 'edit'])->name('petugas.ed
 Route::delete('/delete/{id}', [PetugasController::class, 'destroy'])->name('petugas.delete');
 
 // route transaksi
-Route::get('/transaksi', [TransaksiController::class, 'index']);
+Route::get('/detail-penjualan', [DetailPenjualanController::class, 'index']);
 
+// route Checout 
+Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout.barang');
 
-Route::get('/penjualan', [PenjualanController::class, 'index']);
+});
+

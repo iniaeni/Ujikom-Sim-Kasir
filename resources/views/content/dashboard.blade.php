@@ -5,7 +5,7 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Administrator</h1>
+        <h1>Kasir Cepat</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
@@ -17,13 +17,13 @@
     <section class="section dashboard">
       <div class="row"> 
         <div class="card card-body m-2 mb-3">
-          <h5 class="card-title mb-0 mt-1 " style="font-size: 20px;" ><strong> Hi, Administrator </strong></h5>
+          <h5 class="card-title mb-0 mt-1 " style="font-size: 20px;" ><strong> Hi, {{Auth::user()->nama}} - {{Auth::user()->role}}</strong></h5>
    
           
             </div>
         </div>
     </section>
-
+    @if (Auth::user()->role == 'admin') 
     <section class="section dashboard">
       <div class="row">
 
@@ -143,5 +143,6 @@
 
       </div>
     </section>
+    @endif
     
   </main>

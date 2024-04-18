@@ -16,4 +16,9 @@ class DashboardController extends Controller
      
         return view('content.dashboard', compact('jumlahProduk', 'petugas'));
     }
+
+    public function error()
+    {
+        return view('error');
+    }
 }
